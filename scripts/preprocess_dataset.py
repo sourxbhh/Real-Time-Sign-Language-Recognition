@@ -49,45 +49,69 @@ CLASS_TO_IDX = {c: i for i, c in enumerate(CLASSES)}
 
 
 def setup_mediapipe():
-    """Initialize MediaPipe Hands."""
+    """Initialize MediaPipe Hands using the new Tasks API."""
     import mediapipe as mp
+    from mediapipe.tasks import python
+    from mediapipe.tasks.python import vision
 
-    mp_hands = mp.solutions.hands
-    hands = mp_hands.Hands(
-        static_image_mode=True,  # For images (not video)
-        max_num_hands=1,
-        min_detection_confidence=0.5
+    # Download model if not exists
+    model_path = Path(__file__).parent.parent / 'models' / 'hand_landmarker.task'
+    model_path.parent.mkdir(parents=True, exist_ok=True)
+
+    if not model_path.exists():
+        logger.info("Downloading hand landmarker model...")
+        import urllib.request
+        url = "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task"
+        urllib.request.urlretrieve(url, str(model_path))
+        logger.info(f"Model downloaded to {model_path}")
+
+    # Create hand landmarker
+    base_options = python.BaseOptions(model_asset_path=str(model_path))
+    options = vision.HandLandmarkerOptions(
+        base_options=base_options,
+        running_mode=vision.RunningMode.IMAGE,
+        num_hands=1,
+        min_hand_detection_confidence=0.5,
+        min_hand_presence_confidence=0.5,
+        min_tracking_confidence=0.5
     )
-    return hands
+
+    hand_landmarker = vision.HandLandmarker.create_from_options(options)
+    return hand_landmarker
 
 
-def extract_landmarks(image: np.ndarray, hands) -> Optional[np.ndarray]:
+def extract_landmarks(image: np.ndarray, hand_landmarker) -> Optional[np.ndarray]:
     """
     Extract hand landmarks from an image.
 
     Args:
         image: BGR image from OpenCV
-        hands: MediaPipe Hands instance
+        hand_landmarker: MediaPipe HandLandmarker instance
 
     Returns:
         Normalized landmarks array (21, 3) or None if no hand detected
     """
+    import mediapipe as mp
+
     # Convert BGR to RGB
     rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    # Process image
-    results = hands.process(rgb_image)
+    # Create MediaPipe Image
+    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_image)
 
-    if not results.multi_hand_landmarks:
+    # Detect hands
+    results = hand_landmarker.detect(mp_image)
+
+    if not results.hand_landmarks:
         return None
 
     # Get first hand landmarks
-    hand_landmarks = results.multi_hand_landmarks[0]
+    hand_landmarks = results.hand_landmarks[0]
 
     # Convert to numpy array
     landmarks = np.array([
         [lm.x, lm.y, lm.z]
-        for lm in hand_landmarks.landmark
+        for lm in hand_landmarks
     ], dtype=np.float32)
 
     # Normalize landmarks
@@ -291,7 +315,7 @@ def main():
 
     # Initialize MediaPipe
     logger.info("\nInitializing MediaPipe Hands...")
-    hands = setup_mediapipe()
+    hand_landmarker = setup_mediapipe()
 
     # Process each class
     all_landmarks = []
@@ -322,7 +346,7 @@ def main():
         landmarks_list, stats = process_class_directory(
             class_dir,
             class_name,
-            hands,
+            hand_landmarker,
             max_samples=args.max_per_class,
             visualize=args.visualize
         )
@@ -342,7 +366,7 @@ def main():
         logger.info(f"  {class_name}: {stats['success']}/{stats['total']} samples")
 
     # Close MediaPipe
-    hands.close()
+    hand_landmarker.close()
 
     if not all_landmarks:
         logger.error("No samples were successfully processed!")

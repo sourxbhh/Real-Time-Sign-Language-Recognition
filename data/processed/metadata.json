@@ -1,0 +1,223 @@
+{
+  "classes": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+    "space",
+    "del",
+    "nothing"
+  ],
+  "num_classes": 29,
+  "num_samples": 63580,
+  "landmarks_shape": [
+    63580,
+    21,
+    3
+  ],
+  "class_to_idx": {
+    "A": 0,
+    "B": 1,
+    "C": 2,
+    "D": 3,
+    "E": 4,
+    "F": 5,
+    "G": 6,
+    "H": 7,
+    "I": 8,
+    "J": 9,
+    "K": 10,
+    "L": 11,
+    "M": 12,
+    "N": 13,
+    "O": 14,
+    "P": 15,
+    "Q": 16,
+    "R": 17,
+    "S": 18,
+    "T": 19,
+    "U": 20,
+    "V": 21,
+    "W": 22,
+    "X": 23,
+    "Y": 24,
+    "Z": 25,
+    "space": 26,
+    "del": 27,
+    "nothing": 28
+  },
+  "stats": {
+    "total": 87000,
+    "success": 63580,
+    "failed": 23420,
+    "per_class": {
+      "A": {
+        "total": 3000,
+        "success": 2182,
+        "failed": 818
+      },
+      "B": {
+        "total": 3000,
+        "success": 2202,
+        "failed": 798
+      },
+      "C": {
+        "total": 3000,
+        "success": 1962,
+        "failed": 1038
+      },
+      "D": {
+        "total": 3000,
+        "success": 2457,
+        "failed": 543
+      },
+      "E": {
+        "total": 3000,
+        "success": 2307,
+        "failed": 693
+      },
+      "F": {
+        "total": 3000,
+        "success": 2864,
+        "failed": 136
+      },
+      "G": {
+        "total": 3000,
+        "success": 2428,
+        "failed": 572
+      },
+      "H": {
+        "total": 3000,
+        "success": 2373,
+        "failed": 627
+      },
+      "I": {
+        "total": 3000,
+        "success": 2379,
+        "failed": 621
+      },
+      "J": {
+        "total": 3000,
+        "success": 2571,
+        "failed": 429
+      },
+      "K": {
+        "total": 3000,
+        "success": 2699,
+        "failed": 301
+      },
+      "L": {
+        "total": 3000,
+        "success": 2521,
+        "failed": 479
+      },
+      "M": {
+        "total": 3000,
+        "success": 1603,
+        "failed": 1397
+      },
+      "N": {
+        "total": 3000,
+        "success": 1275,
+        "failed": 1725
+      },
+      "O": {
+        "total": 3000,
+        "success": 2258,
+        "failed": 742
+      },
+      "P": {
+        "total": 3000,
+        "success": 2040,
+        "failed": 960
+      },
+      "Q": {
+        "total": 3000,
+        "success": 2118,
+        "failed": 882
+      },
+      "R": {
+        "total": 3000,
+        "success": 2545,
+        "failed": 455
+      },
+      "S": {
+        "total": 3000,
+        "success": 2555,
+        "failed": 445
+      },
+      "T": {
+        "total": 3000,
+        "success": 2354,
+        "failed": 646
+      },
+      "U": {
+        "total": 3000,
+        "success": 2509,
+        "failed": 491
+      },
+      "V": {
+        "total": 3000,
+        "success": 2548,
+        "failed": 452
+      },
+      "W": {
+        "total": 3000,
+        "success": 2453,
+        "failed": 547
+      },
+      "X": {
+        "total": 3000,
+        "success": 2156,
+        "failed": 844
+      },
+      "Y": {
+        "total": 3000,
+        "success": 2580,
+        "failed": 420
+      },
+      "Z": {
+        "total": 3000,
+        "success": 2343,
+        "failed": 657
+      },
+      "space": {
+        "total": 3000,
+        "success": 1524,
+        "failed": 1476
+      },
+      "del": {
+        "total": 3000,
+        "success": 1773,
+        "failed": 1227
+      },
+      "nothing": {
+        "total": 3000,
+        "success": 1,
+        "failed": 2999
+      }
+    }
+  }
+}

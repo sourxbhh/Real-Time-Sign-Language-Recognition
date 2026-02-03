@@ -583,9 +583,9 @@ class SignLanguageModelStatic(nn.Module):
         self,
         num_landmarks: int = 21,
         input_dim: int = 3,
-        hidden_sizes: Tuple[int, ...] = (256, 128, 64),
+        hidden_sizes: Tuple[int, ...] = (512, 256, 128),
         num_classes: int = 29,
-        dropout: float = 0.3
+        dropout: float = 0.5
     ):
         """
         Initialize static model.
