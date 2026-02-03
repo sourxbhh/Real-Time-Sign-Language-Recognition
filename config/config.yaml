@@ -1,0 +1,190 @@
+# =============================================================================
+# Real-Time Sign Language Recognition System Configuration
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Camera Settings
+# -----------------------------------------------------------------------------
+camera:
+  device_id: 0                    # Webcam device ID (0 for default)
+  width: 640                      # Frame width
+  height: 480                     # Frame height
+  fps: 30                         # Target frames per second
+  flip_horizontal: true           # Mirror the video (natural for user)
+
+# -----------------------------------------------------------------------------
+# Landmark Detection Settings (MediaPipe)
+# -----------------------------------------------------------------------------
+detection:
+  # Hand detection
+  hand:
+    max_num_hands: 2              # Maximum hands to detect
+    min_detection_confidence: 0.7  # Minimum confidence for initial detection
+    min_tracking_confidence: 0.5   # Minimum confidence for tracking
+
+  # Pose detection (optional, for body context)
+  pose:
+    enable: true
+    min_detection_confidence: 0.5
+    min_tracking_confidence: 0.5
+
+  # Face mesh (optional, for facial expressions)
+  face:
+    enable: false                 # Disabled by default for performance
+
+# -----------------------------------------------------------------------------
+# Recognition Model Settings
+# -----------------------------------------------------------------------------
+model:
+  # Architecture
+  type: "cnn_lstm"                # Options: cnn_lstm, transformer, landmark_mlp
+
+  # Input configuration
+  input:
+    sequence_length: 30           # Number of frames per sequence (1 second at 30fps)
+    num_landmarks: 21             # Hand landmarks (21 per hand)
+    landmark_dims: 3              # x, y, z coordinates
+    include_pose: false           # Include pose landmarks
+
+  # CNN Feature Extractor
+  cnn:
+    channels: [64, 128, 256]      # Conv layer channels
+    kernel_size: 3
+    dropout: 0.3
+
+  # LSTM Sequence Processor
+  lstm:
+    hidden_size: 256
+    num_layers: 2
+    bidirectional: true
+    dropout: 0.3
+
+  # Classification head
+  classifier:
+    hidden_sizes: [256, 128]
+    num_classes: 29               # 26 letters + space + delete + nothing
+    dropout: 0.4
+
+# -----------------------------------------------------------------------------
+# Training Configuration
+# -----------------------------------------------------------------------------
+training:
+  # Data
+  dataset_path: "data/processed"
+  train_split: 0.8
+  val_split: 0.1
+  test_split: 0.1
+
+  # Training parameters
+  batch_size: 32
+  epochs: 100
+  learning_rate: 0.001
+  weight_decay: 0.0001
+
+  # Learning rate scheduler
+  scheduler:
+    type: "cosine"                # Options: step, cosine, plateau
+    warmup_epochs: 5
+
+  # Early stopping
+  early_stopping:
+    patience: 15
+    min_delta: 0.001
+
+  # Data augmentation
+  augmentation:
+    enable: true
+    rotation_range: 15            # Degrees
+    scale_range: [0.9, 1.1]
+    translation_range: 0.1        # Fraction of image size
+    noise_std: 0.02               # Gaussian noise standard deviation
+
+# -----------------------------------------------------------------------------
+# Inference Settings
+# -----------------------------------------------------------------------------
+inference:
+  # Confidence thresholds
+  min_confidence: 0.7             # Minimum confidence to accept prediction
+
+  # Temporal smoothing
+  smoothing:
+    enable: true
+    window_size: 5                # Number of predictions to average
+    method: "majority_vote"       # Options: majority_vote, weighted_average
+
+  # Gesture segmentation
+  segmentation:
+    idle_threshold: 0.5           # Confidence below this = idle
+    min_gesture_frames: 10        # Minimum frames for valid gesture
+    max_idle_frames: 15           # Max idle frames before sentence break
+
+# -----------------------------------------------------------------------------
+# Translation Settings
+# -----------------------------------------------------------------------------
+translation:
+  # Sentence construction
+  sentence:
+    max_length: 50                # Maximum words in a sentence
+    auto_capitalize: true
+    auto_punctuate: true
+
+  # Grammar correction (optional)
+  grammar:
+    enable: false                 # Enable grammar correction
+    model: "simple"               # Options: simple, transformer
+
+# -----------------------------------------------------------------------------
+# Text-to-Speech Settings
+# -----------------------------------------------------------------------------
+tts:
+  engine: "pyttsx3"               # Options: pyttsx3, gtts, coqui
+
+  # Voice settings
+  voice:
+    rate: 150                     # Words per minute
+    volume: 1.0                   # 0.0 to 1.0
+    voice_id: null                # null = default voice
+
+  # Behavior
+  behavior:
+    speak_letters: false          # Speak individual letters
+    speak_words: true             # Speak completed words
+    speak_sentences: true         # Speak completed sentences
+    min_word_length: 2            # Minimum word length to speak
+
+# -----------------------------------------------------------------------------
+# User Interface Settings
+# -----------------------------------------------------------------------------
+ui:
+  # Display
+  display:
+    show_landmarks: true          # Draw hand landmarks
+    show_skeleton: true           # Draw landmark connections
+    show_confidence: true         # Show prediction confidence
+    show_fps: true                # Show frames per second
+
+  # Colors (BGR format for OpenCV)
+  colors:
+    landmark: [0, 255, 0]         # Green
+    skeleton: [255, 255, 255]     # White
+    text: [0, 255, 255]           # Yellow
+    background: [40, 40, 40]      # Dark gray
+
+  # Layout
+  layout:
+    video_width: 640
+    video_height: 480
+    sidebar_width: 300
+
+# -----------------------------------------------------------------------------
+# Logging and Debugging
+# -----------------------------------------------------------------------------
+logging:
+  level: "INFO"                   # DEBUG, INFO, WARNING, ERROR
+  save_logs: true
+  log_file: "logs/signlang.log"
+
+debug:
+  save_frames: false              # Save frames for debugging
+  save_predictions: false         # Log all predictions
+  benchmark_mode: false           # Run performance benchmarks

@@ -1,0 +1,3 @@
+# Placeholder for data directories
+# Download ASL Alphabet dataset and place in raw/
+# Preprocessed landmarks will be saved in processed/
